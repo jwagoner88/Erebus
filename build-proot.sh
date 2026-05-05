@@ -26,7 +26,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 BUILD_DIR="${SCRIPT_DIR}/.build-native"
 OUTPUT_DIR="${SCRIPT_DIR}/androidApp/src/main/jniLibs"
 
-# ── Helpers ────────────────────────────────────────────────────────────────────
+# ── Helpers ──────────────────────────────────────────────────────────────────
 ndk_triple() {
     case "$1" in
         arm64-v8a)   echo "aarch64-linux-android" ;;
@@ -84,7 +84,7 @@ find_ndk() {
     exit 1
 }
 
-# ── Handle --clean ─────────────────────────────────────────────────────────────
+# ── Handle --clean ───────────────────────────────────────────────────────────
 if [[ "${1:-}" == "--clean" ]]; then
     echo "Cleaning build directory..."
     rm -rf "$BUILD_DIR"
@@ -92,7 +92,7 @@ if [[ "${1:-}" == "--clean" ]]; then
     exit 0
 fi
 
-# ── Setup ──────────────────────────────────────────────────────────────────────
+# ── Setup ──────────────────────────────────────────────────────────────────
 NDK="$(find_ndk)"
 echo "Using NDK: $NDK"
 
@@ -118,7 +118,7 @@ TOOLCHAIN="$NDK/toolchains/llvm/prebuilt/$HOST_TAG/bin"
 JOBS="$(nproc_portable)"
 echo "Host: $HOST_TAG, parallel jobs: $JOBS"
 
-# ── Download sources ───────────────────────────────────────────────────────────
+# ── Download sources ──────────────────────────────────────────────────────
 mkdir -p "$BUILD_DIR"
 
 if [[ ! -d "$BUILD_DIR/proot" ]]; then
@@ -135,7 +135,7 @@ if [[ ! -d "$BUILD_DIR/talloc-${TALLOC_VERSION}" ]]; then
     rm "$BUILD_DIR/talloc.tar.gz"
 fi
 
-# ── Build talloc for an ABI ────────────────────────────────────────────────────
+# ── Build talloc for an ABI ──────────────────────────────────────────────
 build_talloc() {
     local abi=$1
     local triple
@@ -203,7 +203,7 @@ EOF
     echo "[talloc/$abi] done"
 }
 
-# ── Build proot for an ABI ─────────────────────────────────────────────────────
+# ── Build proot for an ABI ──────────────────────────────────────────────
 build_proot() {
     local abi=$1
     local triple
@@ -265,7 +265,7 @@ build_proot() {
     echo "[proot/$abi] done -> $out_dir"
 }
 
-# ── Build 32-bit loader separately ─────────────────────────────────────────────
+# ── Build 32-bit loader separately ────────────────────────────────────────
 build_loader32() {
     local abi=$1
     local abi32
@@ -320,7 +320,7 @@ build_loader32() {
     echo "[loader32/$abi] done -> $out_dir/libproot-loader32.so"
 }
 
-# ── Main ───────────────────────────────────────────────────────────────────────
+# ── Main ────────────────────────────────────────────────────────────────
 echo ""
 echo "Building proot + talloc from source for: $ABIS"
 echo "Output: $OUTPUT_DIR"
@@ -343,8 +343,3 @@ done
 
 echo "All builds complete!"
 echo ""
-echo "Binaries installed to:"
-for abi in $ABIS; do
-    echo "  $OUTPUT_DIR/$abi/"
-    ls -lh "$OUTPUT_DIR/$abi/"*.so | awk '{print "    " $NF " (" $5 ")"}'
-done
